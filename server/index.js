@@ -2,10 +2,14 @@ import express from "express";
 import {} from "dotenv/config";
 import connectDB from "./db/connectDB.js";
 import router from "./routes/index.js";
+import notFound from "./middlewares/not-found.js";
+import handleError from "./middlewares/handleError.js";
 const app = express();
 
 app.use(express.json());
 app.use("/api", router);
+app.use(notFound);
+app.use(handleError);
 const start = async () => {
   try {
     await connectDB(process.env.MONGO_URL);
