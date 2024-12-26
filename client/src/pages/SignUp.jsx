@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { Form, Formik } from "formik";
 import FormInput from "../components/sign-up/Input";
 import * as Yup from "yup";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const schema = Yup.object().shape({
   username: Yup.string()
@@ -27,8 +29,23 @@ const initialValues = {
 };
 
 const SignUp = () => {
-  const handleSubmit = (values) => {
-    console.log(values);
+  const navigate = useNavigate();
+  const [error, setError] = useState("");
+  const handleSubmit = async (values) => {
+    const res = await fetch("/api/auth/sign-up", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    });
+    const data = await res.json();
+    if (data.message) {
+      setError(data.message);
+    }
+    else {
+      navigate("/sign-in");
+    }
   };
   return (
     <div className="mx-auto max-w-lg p-4">
@@ -49,6 +66,7 @@ const SignUp = () => {
           <button className="bg-slate-700 text-white p-3 rounded-lg font-bold hover:opacity-95">
             Sign Up
           </button>
+          {error && <div className="text-red-500">{error}</div>}
         </Form>
       </Formik>
       <div className="py-4">
