@@ -1,5 +1,4 @@
 import { Form, Formik } from "formik";
-import React from "react";
 import FormInput from "../components/sign-up/Input";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
@@ -34,7 +33,6 @@ const SignIn = () => {
     if (data) {
       dispatch(signInSuccess(data.user));
     }
-
   };
   return (
     <div className="max-w-lg mx-auto p-4">
