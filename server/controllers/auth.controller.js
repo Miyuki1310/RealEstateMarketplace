@@ -23,6 +23,16 @@ class AuthController {
     const { password: pass, ...rest } = user;
     return res.status(200).json({ user: rest });
   });
+
+  google = asyncWrapper(async (req, res) => {
+    const { name, email, avatar } = req.body;
+    const { token, user } = await authService.google(name, email, avatar);
+    res.cookie("access_token", token, {
+      httpOnly: true,
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    });
+    return res.status(200).json({ user });
+  });
 }
 const authController = new AuthController();
 export default authController;

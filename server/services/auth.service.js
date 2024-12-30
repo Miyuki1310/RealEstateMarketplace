@@ -34,6 +34,27 @@ class AuthService {
     );
     return { token, user: validUser };
   }
+
+  async google(name, email, avatar) {
+    const existUser = await User.findOne({ email }).lean();
+    if (existUser) {
+      const token = jwt.sign({ id: existUser._id }, process.env.JWT_SECRET);
+      const { password, ...rest } = existUser;
+      return { token, user: rest };
+    } else {
+      const generatedPassword = Math.random().toString(36).slice(-8) + "aA1!";
+      const hashedPassword = await bcrypt.hash(generatedPassword, 10);
+      const newUser = await User.create({
+        username: name.split("").join("").toLowerCase(), 
+        email,
+        password: hashedPassword,
+        avatar,
+      });
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+      const { password, ...rest } = newUser;
+      return { token, user: rest };
+    }
+  }
 }
 
 const authService = new AuthService();
