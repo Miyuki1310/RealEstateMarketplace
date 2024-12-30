@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { signInSuccess } from "../redux/user/userSlice";
+import OAuth from "../components/sign-up/OAuth";
 
 const schema = Yup.object().shape({
   email: Yup.string().email().required("Email is required"),
@@ -48,6 +49,7 @@ const SignIn = () => {
           <button className="bg-slate-700 text-white p-3 rounded-lg font-bold hover:opacity-95">
             Sign In
           </button>
+          <OAuth />
         </Form>
       </Formik>
       <Link
