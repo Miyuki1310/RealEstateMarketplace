@@ -12,6 +12,17 @@ class AuthController {
     const newUser = await authService.signUp(username, email, password);
     return res.status(201).json({ user: newUser });
   });
+
+  signIn = asyncWrapper(async (req, res) => {
+    const { email, password } = req.body;
+    const { token, user } = await authService.signIn(email, password);
+    res.cookie("access_token", token, {
+      httpOnly: true,
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    });
+    const { password: pass, ...rest } = user;
+    return res.status(200).json({ user: rest });
+  });
 }
 const authController = new AuthController();
 export default authController;
