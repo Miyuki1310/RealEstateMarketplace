@@ -1,8 +1,11 @@
-import React from "react";
 import { FaSearch } from "react-icons/fa";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 const Header = () => {
+  const { currentUser } = useSelector((state) => state.user);
+  console.log(currentUser);
+
   return (
     <header className="bg-slate-200 shadow-md flex justify-center">
       <div className="flex justify-between items-center max-w-6xl flex-1">
@@ -26,9 +29,17 @@ const Header = () => {
           <Link to={"/about"}>
             <li className="hidden sm:inline hover:underline">About</li>
           </Link>
-          <Link to={"/sign-in"}>
-            <li className="hidden sm:inline hover:underline">Sign in</li>
-          </Link>
+          {currentUser ? (
+            <img
+              src={currentUser.avatar}
+              alt="avatar"
+              className="w-8 h-8 rounded-full"
+            />
+          ) : (
+            <Link to={"/sign-in"}>
+              <li className="hidden sm:inline hover:underline">Sign in</li>
+            </Link>
+          )}
         </ul>
       </div>
     </header>
