@@ -14,6 +14,22 @@ class UserController {
     const { password, ...user } = newUser;
     return res.status(200).json({ user: user });
   });
+
+  updateUser = asyncWrapper(async (req, res) => {
+    const { username, email, password, confirmPassword } = req.body;
+
+    const userId = req.user;
+    const newUser = await userService.updateUser(
+      username,
+      email,
+      password,
+      confirmPassword,
+      userId
+    );
+    console.log(newUser);
+
+    return res.status(200).json({ user: newUser, message: "User updated" });
+  });
 }
 
 const userController = new UserController();

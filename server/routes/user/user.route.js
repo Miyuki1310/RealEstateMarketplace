@@ -22,4 +22,6 @@ userRouter.post(
   userController.changeAvatar
 );
 
+userRouter.put("/update-user", isAuth, userController.updateUser);
+
 export default userRouter;
