@@ -2,19 +2,34 @@ import { Form, Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import FormInput from "../components/sign-up/Input";
 import * as Yup from "yup";
-import { useEffect, useState } from "react";
 import { signInSuccess } from "../redux/user/userSlice";
+import { useState } from "react";
 
 const schema = Yup.object().shape({
   username: Yup.string().required("Username is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
+  password: Yup.string().min(6, "Password must be at least 6 characters"),
+  confirmPassword: Yup.string().oneOf(
+    [Yup.ref("password"), null],
+    "Passwords must match"
+  ),
 });
 
 const Profile = () => {
   const { currentUser } = useSelector((state) => state.user);
+  const [success, setSuccess] = useState(null);
   const dispatch = useDispatch();
   const handleSubmitForm = async (values) => {
-    console.log(values);
+    const res = await fetch("/api/user/update-user", {
+      method: "put",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(values),
+    });
+    const data = await res.json();
+    dispatch(signInSuccess(data.user));
+    setSuccess(data.message);
   };
   const handleChangeImage = async (e) => {
     const file = e.target.files[0];
@@ -27,6 +42,8 @@ const Profile = () => {
         credentials: "same-origin",
       });
       const data = await res.json();
+      console.log(data);
+
       dispatch(signInSuccess(data.user));
     }
     return;
@@ -62,12 +79,21 @@ const Profile = () => {
         <Form className="flex flex-col gap-4">
           <FormInput name="username" placeholder="Username" />
           <FormInput name="email" placeholder="Email" />
+          <FormInput
+            name="password"
+            placeholder="Enter your new password (optional)"
+          />
+          <FormInput
+            name="confirmPassword"
+            placeholder="Confirm your new password"
+          />
           <button
             className="bg-slate-700 text-white p-3 rounded-lg font-bold hover:opacity-95"
             type="submit"
           >
             Update profile
           </button>
+          {success && <p className="text-green-500 font-semibold">{success}</p>}
         </Form>
       </Formik>
       <div className="flex justify-between mt-3">
