@@ -4,9 +4,12 @@ import connectDB from "./db/connectDB.js";
 import router from "./routes/index.js";
 import notFound from "./middlewares/not-found.js";
 import handleError from "./middlewares/handleError.js";
+import cookieParser from "cookie-parser";
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
+app.use("/uploads/profiles", express.static("./uploads/profiles"));
 app.use("/api", router);
 app.use(notFound);
 app.use(handleError);
