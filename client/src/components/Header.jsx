@@ -22,7 +22,7 @@ const Header = () => {
           ></input>
           <FaSearch className="text-slate-500" />
         </form>
-        <ul className="flex gap-4 font-bold">
+        <ul className="flex gap-6 font-bold items-center">
           <Link to={"/"}>
             <li className="hidden sm:inline hover:underline">Home</li>
           </Link>

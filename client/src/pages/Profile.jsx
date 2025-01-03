@@ -1,7 +1,9 @@
 import { Form, Formik } from "formik";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import FormInput from "../components/sign-up/Input";
 import * as Yup from "yup";
+import { useEffect, useState } from "react";
+import { signInSuccess } from "../redux/user/userSlice";
 
 const schema = Yup.object().shape({
   username: Yup.string().required("Username is required"),
@@ -10,18 +12,31 @@ const schema = Yup.object().shape({
 
 const Profile = () => {
   const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const handleSubmitForm = async (values) => {
     console.log(values);
   };
-  const handleChangeImage = (e) => {
+  const handleChangeImage = async (e) => {
     const file = e.target.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("image", file);
+      const res = await fetch("/api/user/change-avatar", {
+        method: "post",
+        body: formData,
+        credentials: "same-origin",
+      });
+      const data = await res.json();
+      dispatch(signInSuccess(data.user));
+    }
+    return;
   };
   return (
     <div className="max-w-lg mx-auto">
       <h1 className="text-center font-semibold text-3xl my-7">Profile</h1>
       <div className="flex justify-center mb-7 relative w-32 h-32 rounded-lg mx-auto group">
         <img
-          className="rounded-full absolute inset-0"
+          className="rounded-full absolute w-full h-full object-cover"
           alt="avatar"
           src={currentUser.avatar}
         />
@@ -32,6 +47,7 @@ const Profile = () => {
           type="file"
           className="absolute inset-0 z-20 opacity-0 group-hover:cursor-pointer"
           accept="image/*"
+          name="image"
           onChange={handleChangeImage}
         ></input>
       </div>

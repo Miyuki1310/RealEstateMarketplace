@@ -22,7 +22,7 @@ const SignIn = () => {
   console.log(currentUser);
   const handleSubmitForm = async (values) => {
     console.log(values);
-    const res = await fetch("api/auth/sign-in", {
+    const res = await fetch("/api/auth/sign-in", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
