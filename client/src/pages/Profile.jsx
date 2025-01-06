@@ -2,7 +2,7 @@ import { Form, Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import FormInput from "../components/sign-up/Input";
 import * as Yup from "yup";
-import { signInSuccess } from "../redux/user/userSlice";
+import { updateUser } from "../redux/user/userSlice";
 import { useState } from "react";
 
 const schema = Yup.object().shape({
@@ -28,7 +28,7 @@ const Profile = () => {
       body: JSON.stringify(values),
     });
     const data = await res.json();
-    dispatch(signInSuccess(data.user));
+    dispatch(updateUser(data.user));
     setSuccess(data.message);
   };
   const handleChangeImage = async (e) => {
@@ -44,7 +44,7 @@ const Profile = () => {
       const data = await res.json();
       console.log(data);
 
-      dispatch(signInSuccess(data.user));
+      dispatch(updateUser(data.user));
     }
     return;
   };
@@ -77,15 +77,17 @@ const Profile = () => {
         onSubmit={handleSubmitForm}
       >
         <Form className="flex flex-col gap-4">
-          <FormInput name="username" placeholder="Username" />
-          <FormInput name="email" placeholder="Email" />
+          <FormInput name="username" placeholder="Username" type="text" />
+          <FormInput name="email" placeholder="Email" type="email" />
           <FormInput
             name="password"
             placeholder="Enter your new password (optional)"
+            type="password"
           />
           <FormInput
             name="confirmPassword"
             placeholder="Confirm your new password"
+            type="password"
           />
           <button
             className="bg-slate-700 text-white p-3 rounded-lg font-bold hover:opacity-95"
