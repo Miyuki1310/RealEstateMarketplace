@@ -21,9 +21,11 @@ class UserService {
       const newUser = await User.findByIdAndUpdate(
         userId,
         {
-          username,
-          email,
-          password: newPassword,
+          $set: {
+            username,
+            email,
+            password: newPassword,
+          },
         },
         { new: true }
       ).lean();
@@ -34,9 +36,9 @@ class UserService {
       return newUser;
     } else {
       console.log(username, email);
-
-      const newUser = await User.findOneAndUpdate(
-        { _id: userId },
+      console.log(userId);
+      const newUser = await User.findByIdAndUpdate(
+        userId,
         {
           username,
           email,

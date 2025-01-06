@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 const isAuth = asyncWrapper(async (req, res, next) => {
   const token = req.cookies.access_token;
   if (!token) {
-    throw new CustomAPIError("Authentication required", 401);
+    throw new CustomAPIError("Please sign in or sign up", 401);
   }
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
   req.user = decoded.id;

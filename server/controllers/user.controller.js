@@ -26,9 +26,9 @@ class UserController {
       confirmPassword,
       userId
     );
-    console.log(newUser);
+    const { password: pass, ...user } = newUser;
 
-    return res.status(200).json({ user: newUser, message: "User updated" });
+    return res.status(200).json({ user: user, message: "User updated" });
   });
 }
 
