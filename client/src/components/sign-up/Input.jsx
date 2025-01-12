@@ -9,7 +9,7 @@ const FormInput = ({ name, ...rest }) => {
         name={name}
         {...rest}
         {...field}
-        className="p-3 rounded-lg border w-full"
+        className="p-3 rounded-lg border w-full outline-none"
       />
       <ErrorMessage name={name} component="div" className="text-red-500" />
     </div>

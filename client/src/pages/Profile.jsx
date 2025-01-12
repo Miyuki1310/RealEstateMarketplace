@@ -110,6 +110,13 @@ const Profile = () => {
           >
             Update profile
           </button>
+          <button
+            className="bg-green-700 text-white p-3 rounded-lg font-bold hover:opacity-95"
+            type="button"
+            onClick={() => navigate("/create-listing")}
+          >
+            Create Listing
+          </button>
           {success && <p className="text-green-500 font-semibold">{success}</p>}
         </Form>
       </Formik>
