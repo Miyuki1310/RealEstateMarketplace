@@ -3,7 +3,7 @@ import FormInput from "../components/sign-up/Input";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
-import { signInSuccess } from "../redux/user/userSlice";
+import { signInFail, signInSuccess } from "../redux/user/userSlice";
 import OAuth from "../components/sign-up/OAuth";
 
 const schema = Yup.object().shape({
@@ -18,7 +18,7 @@ const schema = Yup.object().shape({
 
 const SignIn = () => {
   const dispatch = useDispatch();
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, error } = useSelector((state) => state.user);
   console.log(currentUser);
   const handleSubmitForm = async (values) => {
     console.log(values);
@@ -31,6 +31,10 @@ const SignIn = () => {
     });
 
     const data = await res.json();
+    if (res.status !== 200) {
+      dispatch(signInFail(data.message));
+    }
+
     if (data) {
       dispatch(signInSuccess(data.user));
     }
@@ -49,6 +53,7 @@ const SignIn = () => {
           <button className="bg-slate-700 text-white p-3 rounded-lg font-bold hover:opacity-95">
             Sign In
           </button>
+          {error && <p className="text-red-500">{error}</p>}  
           <OAuth />
         </Form>
       </Formik>

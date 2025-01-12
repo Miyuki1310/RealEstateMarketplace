@@ -2,8 +2,9 @@ import { Form, Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import FormInput from "../components/sign-up/Input";
 import * as Yup from "yup";
-import { updateUser } from "../redux/user/userSlice";
+import { signOut, updateUser } from "../redux/user/userSlice";
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const schema = Yup.object().shape({
   username: Yup.string().required("Username is required"),
@@ -16,8 +17,9 @@ const schema = Yup.object().shape({
 });
 
 const Profile = () => {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, error } = useSelector((state) => state.user);
   const [success, setSuccess] = useState(null);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleSubmitForm = async (values) => {
     const res = await fetch("/api/user/update-user", {
@@ -42,11 +44,24 @@ const Profile = () => {
         credentials: "same-origin",
       });
       const data = await res.json();
-      console.log(data);
-
+      if (res.status !== 200) {
+        dispatch(updateUser(data.user));
+      }
       dispatch(updateUser(data.user));
+      return;
     }
+
     return;
+  };
+
+  const handleLogOut = async () => {
+    const res = await fetch("/api/auth/sign-out", {
+      method: "post",
+    });
+    if (res.status === 200) {
+      dispatch(signOut());
+      navigate("/sign-in");
+    }
   };
   return (
     <div className="max-w-lg mx-auto">
@@ -99,8 +114,13 @@ const Profile = () => {
         </Form>
       </Formik>
       <div className="flex justify-between mt-3">
-        <p className="text-red-500 font-semibold">Delete account</p>
-        <p className="text-red-500 font-semibold">Log out</p>
+        {error && <p className="text-red-500 font-semibold">{error}</p>}
+        <p
+          className="text-red-500 font-semibold cursor-pointer hover:underline0"
+          onClick={handleLogOut}
+        >
+          Log out
+        </p>
       </div>
     </div>
   );
