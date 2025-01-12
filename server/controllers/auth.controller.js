@@ -33,6 +33,11 @@ class AuthController {
     });
     return res.status(200).json({ user });
   });
+
+  signOut = asyncWrapper(async (req, res) => {
+    res.clearCookie("access_token");
+    return res.status(200).json({ message: "Sign out successfully" });
+  });
 }
 const authController = new AuthController();
 export default authController;
