@@ -75,6 +75,14 @@ const Profile = () => {
   };
   console.log(listings);
 
+  const handleDeleteListing = async (id) => {
+    const res = await fetch(`/api/listing/delete/${id}`, {
+      method: "delete",
+    });
+    const data = await res.json();
+    setListings((prev) => prev.filter((listing) => listing._id !== id));
+  };
+
   return (
     <div className="max-w-lg mx-auto">
       <h1 className="text-center font-semibold text-3xl my-7">Profile</h1>
@@ -154,29 +162,35 @@ const Profile = () => {
         <div className="flex flex-col gap-4 mb-20">
           <h2 className="text-center font-semibold text-2xl">Your Listings</h2>
           {listings.map((listing) => {
-            return (
-              <div
-                key={listing._id}
-                className="flex border justify-between p-3 rounded-lg"
-              >
-                <div className="flex gap-2 items-center">
-                  <img
-                    src={listing.image[0]}
-                    alt=""
-                    className="w-20 h-20 object-cover rounded-lg"
-                  />
-                  <p className="font-semibold">{listing.name}</p>
+            if (!listing.isDeleted)
+              return (
+                <div
+                  key={listing._id}
+                  className="flex border justify-between p-3 rounded-lg"
+                >
+                  <div className="flex gap-2 items-center">
+                    <img
+                      src={listing.image[0]}
+                      alt=""
+                      className="w-20 h-20 object-cover rounded-lg"
+                    />
+                    <p className="font-semibold">{listing.name}</p>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <button
+                      onClick={() => {
+                        handleDeleteListing(listing._id);
+                      }}
+                      className="bg-red-500 text-white p-2 rounded-lg"
+                    >
+                      Delete
+                    </button>
+                    <button className="bg-blue-500 text-white p-2 rounded-lg">
+                      Edit
+                    </button>
+                  </div>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <button className="bg-red-500 text-white p-2 rounded-lg">
-                    Delete
-                  </button>
-                  <button className="bg-blue-500 text-white p-2 rounded-lg">
-                    Edit
-                  </button>
-                </div>
-              </div>
-            );
+              );
           })}
         </div>
       )}
