@@ -34,6 +34,11 @@ class ListingService {
     }
     return newListing;
   }
+
+  async getUserListings(userId) {
+    const listings = await Listing.find({ user: userId });
+    return listings;
+  }
 }
 
 const listingService = new ListingService();

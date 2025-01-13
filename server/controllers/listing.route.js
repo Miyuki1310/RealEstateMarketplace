@@ -49,6 +49,15 @@ class ListingController {
     }
     return res.status(201).json({ listing: newListing });
   });
+  getUserListings = asyncWrapper(async (req, res) => {
+    const userId = req.user;
+    if (req.params.id === userId) {
+      const listings = await listingService.getUserListings(userId);
+      return res.status(200).json({ listings });
+    } else {
+      throw new CustomAPIError("Unauthorized", 401);
+    }
+  });
 }
 
 const listingController = new ListingController();

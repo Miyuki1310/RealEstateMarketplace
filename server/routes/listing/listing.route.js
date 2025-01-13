@@ -8,5 +8,6 @@ listRouter.get("/test", (req, res) => {
 });
 
 listRouter.post("/create", isAuth, listingController.create);
+listRouter.get("/getAll/:id", isAuth, listingController.getUserListings);
 
 export default listRouter;
