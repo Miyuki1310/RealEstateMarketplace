@@ -12,7 +12,7 @@ class ListingService {
     parking,
     type,
     offer,
-    image,
+    imageUrls,
     user
   ) {
     const newListing = await Listing.create({
@@ -26,7 +26,7 @@ class ListingService {
       parking,
       type,
       offer,
-      image,
+      image: imageUrls,
       user,
     });
     if (!newListing) {

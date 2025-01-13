@@ -15,7 +15,7 @@ class ListingController {
       parking,
       type,
       offer,
-      image,
+      imageUrls,
     } = req.body;
     console.log(
       name,
@@ -28,7 +28,7 @@ class ListingController {
       parking,
       type,
       offer,
-      image
+      imageUrls
     );
     const newListing = await listingService.addListing(
       name,
@@ -41,7 +41,7 @@ class ListingController {
       parking,
       type,
       offer,
-      image,
+      imageUrls,
       req.user
     );
     if (!newListing) {
