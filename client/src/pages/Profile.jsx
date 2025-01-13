@@ -4,7 +4,7 @@ import FormInput from "../components/sign-up/Input";
 import * as Yup from "yup";
 import { signOut, updateUser } from "../redux/user/userSlice";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const schema = Yup.object().shape({
   username: Yup.string().required("Username is required"),
@@ -21,6 +21,7 @@ const Profile = () => {
   const [success, setSuccess] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [listings, setListings] = useState([]);
   const handleSubmitForm = async (values) => {
     const res = await fetch("/api/user/update-user", {
       method: "put",
@@ -63,6 +64,17 @@ const Profile = () => {
       navigate("/sign-in");
     }
   };
+
+  const handleShowListings = async () => {
+    const res = await fetch(`/api/listing/getAll/${currentUser._id}`);
+    const data = await res.json();
+    if (!data.message) {
+      setListings(data.listings);
+      return;
+    }
+  };
+  console.log(listings);
+
   return (
     <div className="max-w-lg mx-auto">
       <h1 className="text-center font-semibold text-3xl my-7">Profile</h1>
@@ -129,6 +141,45 @@ const Profile = () => {
           Log out
         </p>
       </div>
+      <div className="flex justify-center">
+        <button
+          className="text-green-500 mb-4 font-semibold"
+          onClick={handleShowListings}
+        >
+          Show listings
+        </button>
+      </div>
+
+      {listings.length > 0 && (
+        <div className="flex flex-col gap-4 mb-20">
+          <h2 className="text-center font-semibold text-2xl">Your Listings</h2>
+          {listings.map((listing) => {
+            return (
+              <div
+                key={listing._id}
+                className="flex border justify-between p-3 rounded-lg"
+              >
+                <div className="flex gap-2 items-center">
+                  <img
+                    src={listing.image[0]}
+                    alt=""
+                    className="w-20 h-20 object-cover rounded-lg"
+                  />
+                  <p className="font-semibold">{listing.name}</p>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <button className="bg-red-500 text-white p-2 rounded-lg">
+                    Delete
+                  </button>
+                  <button className="bg-blue-500 text-white p-2 rounded-lg">
+                    Edit
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
