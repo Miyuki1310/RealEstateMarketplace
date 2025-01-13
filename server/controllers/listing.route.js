@@ -58,6 +58,13 @@ class ListingController {
       throw new CustomAPIError("Unauthorized", 401);
     }
   });
+
+  deleteListing = asyncWrapper(async (req, res) => {
+    const userId = req.user;
+    const listingId = req.params.id;
+    const listing = await listingService.deleteListing(listingId, userId);
+    return res.status(200).json({ listing });
+  });
 }
 
 const listingController = new ListingController();

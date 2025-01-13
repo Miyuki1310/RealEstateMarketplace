@@ -9,5 +9,6 @@ listRouter.get("/test", (req, res) => {
 
 listRouter.post("/create", isAuth, listingController.create);
 listRouter.get("/getAll/:id", isAuth, listingController.getUserListings);
+listRouter.delete("/delete/:id", isAuth, listingController.deleteListing);
 
 export default listRouter;

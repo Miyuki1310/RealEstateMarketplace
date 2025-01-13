@@ -39,6 +39,20 @@ class ListingService {
     const listings = await Listing.find({ user: userId });
     return listings;
   }
+
+  async deleteListing(listingId, userId) {
+    const listing = await Listing.findByIdAndUpdate(
+      listingId,
+      {
+        isDeleted: true,
+      },
+      { new: true }
+    );
+    if (!listing) {
+      throw new CustomAPIError("Listing not found", 404);
+    }
+    return listing;
+  }
 }
 
 const listingService = new ListingService();
