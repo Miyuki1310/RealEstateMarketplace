@@ -38,12 +38,14 @@ const listingSchema = new mongoose.Schema(
       required: true,
     },
     offer: {
-      type: String,
+      type: Boolean,
       required: true,
     },
-    image: {
-      type: String,
-    },
+    image: [
+      {
+        type: String,
+      },
+    ],
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
