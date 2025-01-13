@@ -9,6 +9,23 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
+import RadioInput from "../components/RadioInput";
+import * as Yup from "yup";
+import { useNavigate } from "react-router-dom";
+
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required("Name is required"),
+  description: Yup.string().required("Description is required"),
+  address: Yup.string().required("Address is required"),
+  type: Yup.string().required("Type is required"),
+  regularPrice: Yup.number()
+    .required("Regular price is required")
+    .min(1, "Regular price must be a positive number"),
+  discountPrice: Yup.number().min(
+    0,
+    "Discount price must be a positive number"
+  ),
+});
 
 const CreateListing = () => {
   const [files, setFiles] = React.useState([]);
@@ -17,6 +34,9 @@ const CreateListing = () => {
   });
   const [error, setError] = React.useState("");
   const [uploading, setUploading] = React.useState(false);
+  const [success, setSuccess] = React.useState("");
+  const [offer, setOffer] = React.useState(false);
+  const navigate = useNavigate();
   const handleImageSubmit = () => {
     setUploading(true);
     if (files.length > 0 && files.length <= 6) {
@@ -68,12 +88,38 @@ const CreateListing = () => {
       );
     });
   };
+  const handleSubmitForm = async (values) => {
+    if (formData.imageUrls.length === 0)
+      return setError("Please upload at least 1 image");
+    const data = { ...formData, ...values };
+    console.log(data);
+
+    const response = await fetch("/api/listing/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    const resData = await response.json();
+    if (response.status !== 201) {
+      setError(resData.message);
+      return;
+    }
+    setError("");
+    setSuccess("Create listing successfully");
+    setTimeout(() => {
+      navigate("/listing/" + resData.listing._id);
+    }, 2000);
+  };
+
   const handleRemoveImage = (index) => {
     setFormData({
       ...formData,
       imageUrls: formData.imageUrls.filter((_, i) => i !== index),
     });
   };
+  console.log(offer);
 
   return (
     <main className="max-w-4xl mx-auto p-4">
@@ -92,9 +138,10 @@ const CreateListing = () => {
           bedroom: 1,
           baths: 1,
           regularPrice: 1,
-          discountPrice: 1,
+          discountPrice: offer ? 1 : 0,
         }}
-        onSubmit={(values) => console.log(values)}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmitForm}
       >
         <Form className="flex gap-3 flex-col sm:flex-row">
           <div className="flex-1 flex flex-col gap-3">
@@ -103,16 +150,11 @@ const CreateListing = () => {
             <FormInput name="address" placeholder="Address" type="text" />
             <div className="flex gap-6 flex-wrap">
               <div className="flex gap-2 text-lg">
-                <FormInput
-                  name="type"
-                  placeholder="Address"
-                  type="radio"
-                  values="sell"
-                />
+                <RadioInput name="type" values="sell" />
                 Sell
               </div>
               <div className="flex gap-2 text-lg">
-                <FormInput name="type" type="radio" values="rent" />
+                <RadioInput name="type" values="rent" />
                 Rent
               </div>
               <div className="flex gap-2 text-lg">
@@ -128,7 +170,14 @@ const CreateListing = () => {
                 Furnished
               </div>
               <div className="flex gap-2 text-lg">
-                <FormInput name="offer" placeholder="Price" type="checkbox" />
+                <FormInput
+                  name="offer"
+                  placeholder="Price"
+                  type="checkbox"
+                  onClick={() => {
+                    setOffer(!offer);
+                  }}
+                />
                 Offer
               </div>
             </div>
@@ -152,13 +201,15 @@ const CreateListing = () => {
                   <p className="text-sm">($ / month)</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3">
-                <FormInput name="discountPrice" type="number" />
-                <div className="flex flex-col items-center">
-                  <p>Discount Price</p>
-                  <p className="text-sm">($ / month)</p>
+              {offer && (
+                <div className="flex items-center gap-3">
+                  <FormInput name="discountPrice" type="number" />
+                  <div className="flex flex-col items-center">
+                    <p>Discount Price</p>
+                    <p className="text-sm">($ / month)</p>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
           <div className="flex-1 flex flex-col gap-3">
@@ -206,6 +257,8 @@ const CreateListing = () => {
             >
               Create List
             </button>
+            {success && <p className="text-green-600">{success}</p>}
+            {error && <p className="text-red-600">{error}</p>}
             {formData.imageUrls.length > 0 &&
               formData.imageUrls.map((url, index) => {
                 return (
@@ -227,7 +280,6 @@ const CreateListing = () => {
                   </div>
                 );
               })}
-            {error && <p className="text-red-600">{error}</p>}
           </div>
         </Form>
       </Formik>

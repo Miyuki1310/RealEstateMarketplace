@@ -2,7 +2,7 @@ import { ErrorMessage, useField } from "formik";
 import PropTypes from "prop-types";
 
 const TextArea = ({ name, ...rest }) => {
-  const { field } = useField(name);
+  const [field] = useField(name);
   return (
     <div>
       <textarea
