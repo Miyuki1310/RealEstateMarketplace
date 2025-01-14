@@ -9,7 +9,7 @@ const Header = () => {
 
   return (
     <header className="bg-slate-200 shadow-md flex justify-center">
-      <div className="flex justify-between items-center max-w-6xl flex-1">
+      <div className="flex justify-between items-center max-w-6xl flex-1 p-3">
         <Link to={"/"}>
           <h1 className="font-bold text-xl">
             <span className="text-slate-500">Sahand</span>
