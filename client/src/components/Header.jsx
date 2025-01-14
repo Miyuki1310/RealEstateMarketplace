@@ -12,7 +12,7 @@ const Header = () => {
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.set("search", searchTerm);
     const searchQuery = urlParams.toString();
-    navigate(`/find?${searchQuery}`);
+    navigate(`/search?${searchQuery}`);
   };
 
   React.useEffect(() => {
