@@ -7,6 +7,7 @@ class ListingService {
     address,
     regularPrice,
     discountPrice,
+    baths,
     bedroom,
     furnished,
     parking,
@@ -21,6 +22,7 @@ class ListingService {
       address,
       regularPrice,
       discountPrice,
+      bathroom: baths,
       bedroom,
       furnished,
       parking,
@@ -58,6 +60,14 @@ class ListingService {
     const listing = await Listing.findByIdAndUpdate(listingId, update, {
       new: true,
     });
+    if (!listing) {
+      throw new CustomAPIError("Listing not found", 404);
+    }
+    return listing;
+  }
+
+  async getListing(listingId) {
+    const listing = await Listing.findById(listingId);
     if (!listing) {
       throw new CustomAPIError("Listing not found", 404);
     }

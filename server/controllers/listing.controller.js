@@ -10,6 +10,7 @@ class ListingController {
       address,
       regularPrice,
       discountPrice,
+      baths,
       bedroom,
       furnished,
       parking,
@@ -36,6 +37,7 @@ class ListingController {
       address,
       regularPrice,
       discountPrice,
+      baths,
       bedroom,
       furnished,
       parking,
@@ -83,6 +85,12 @@ class ListingController {
         401
       );
     }
+  });
+
+  getListing = asyncWrapper(async (req, res) => {
+    const listingId = req.params.id;
+    const listing = await listingService.getListing(listingId);
+    return res.status(200).json({ listing });
   });
 }
 
