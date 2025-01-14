@@ -53,6 +53,16 @@ class ListingService {
     }
     return listing;
   }
+
+  async updateListing(listingId, userId, update) {
+    const listing = await Listing.findByIdAndUpdate(listingId, update, {
+      new: true,
+    });
+    if (!listing) {
+      throw new CustomAPIError("Listing not found", 404);
+    }
+    return listing;
+  }
 }
 
 const listingService = new ListingService();

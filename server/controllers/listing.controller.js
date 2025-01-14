@@ -65,6 +65,25 @@ class ListingController {
     const listing = await listingService.deleteListing(listingId, userId);
     return res.status(200).json({ listing });
   });
+
+  updateListing = asyncWrapper(async (req, res) => {
+    const listingId = req.params.id;
+    const userId = req.user;
+    const { user, ...update } = req.body;
+    if (user === userId) {
+      const listing = await listingService.updateListing(
+        listingId,
+        userId,
+        update
+      );
+      return res.status(200).json({ listing });
+    } else {
+      throw new CustomAPIError(
+        "You dont have permission or you can try sign in again",
+        401
+      );
+    }
+  });
 }
 
 const listingController = new ListingController();
