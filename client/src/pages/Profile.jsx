@@ -80,6 +80,8 @@ const Profile = () => {
       method: "delete",
     });
     const data = await res.json();
+    console.log(data);
+    
     setListings((prev) => prev.filter((listing) => listing._id !== id));
   };
 
@@ -185,7 +187,12 @@ const Profile = () => {
                     >
                       Delete
                     </button>
-                    <button className="bg-blue-500 text-white p-2 rounded-lg">
+                    <button
+                      onClick={() => {
+                        navigate(`/update-listing/${listing._id}`);
+                      }}
+                      className="bg-blue-500 text-white p-2 rounded-lg"
+                    >
                       Edit
                     </button>
                   </div>
