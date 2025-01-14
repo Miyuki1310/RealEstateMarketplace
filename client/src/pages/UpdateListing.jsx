@@ -3,7 +3,7 @@ import React from "react";
 import FormInput from "../components/sign-up/Input";
 import TextArea from "../components/TextArea";
 import RadioInput from "../components/RadioInput";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   getDownloadURL,
   getStorage,
@@ -12,6 +12,20 @@ import {
 } from "firebase/storage";
 import { app } from "../firebase";
 import { useSelector } from "react-redux";
+import * as Yup from "yup";
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required("Name is required"),
+  description: Yup.string().required("Description is required"),
+  address: Yup.string().required("Address is required"),
+  type: Yup.string().required("Type is required"),
+  regularPrice: Yup.number()
+    .required("Regular price is required")
+    .min(1, "Regular price must be a positive number"),
+  discountPrice: Yup.number().min(
+    0,
+    "Discount price must be a positive number"
+  ),
+});
 
 const UpdateListing = () => {
   const params = useParams();
@@ -22,16 +36,16 @@ const UpdateListing = () => {
   const [error, setError] = React.useState("");
   const [success, setSuccess] = React.useState("");
   const [formData, setFormData] = React.useState([]);
-
+  const navigate = useNavigate();
   React.useEffect(() => {
     const listingId = params.listingId;
 
-    const fetchListing = async () => {
+    const fetchListing = async (listingId) => {
       const res = await fetch(`/api/listing/get/${listingId}`);
       const data = await res.json();
       setFormData(data.listing);
     };
-    fetchListing();
+    fetchListing(listingId);
     //Reset form:
   }, [params.listingId]);
 
@@ -85,13 +99,14 @@ const UpdateListing = () => {
     });
   };
   const handleSubmitForm = async (values) => {
+    if (formData.image.length === 0)
+      return setError("Please upload at least 1 image");
     const data = {
       ...values,
       image: formData.image,
       user: currentUser._id,
       discountPrice: offer ? values.discountPrice : 0,
     };
-    // console.log(data);
 
     const res = await fetch(`/api/listing/update/${params.listingId}`, {
       method: "PUT",
@@ -108,6 +123,7 @@ const UpdateListing = () => {
     }
     setSuccess("Listing updated successfully");
     setError("");
+    navigate("/listing/" + params.listingId);
   };
   const handleRemoveImage = (index) => {
     setFormData({
@@ -136,7 +152,7 @@ const UpdateListing = () => {
             regularPrice: formData.regularPrice,
             discountPrice: formData.discountPrice,
           }}
-          // validationSchema={validationSchema}
+          validationSchema={validationSchema}
           onSubmit={handleSubmitForm}
         >
           <Form className="flex gap-3 flex-col sm:flex-row">
@@ -258,7 +274,7 @@ const UpdateListing = () => {
                 className="p-3 bg-slate-700 text-white rounded-lg font-bold hover:opacity-95"
                 type="submit"
               >
-                Create List
+                Update Listing
               </button>
               {success && <p className="text-green-600">{success}</p>}
               {error && <p className="text-red-600">{error}</p>}
