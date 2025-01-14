@@ -73,6 +73,33 @@ class ListingService {
     }
     return listing;
   }
+
+  async getListings(
+    limit,
+    startIndex,
+    offer,
+    furnished,
+    parking,
+    type,
+    searchTerm,
+    sort,
+    order
+  ) {
+
+    const listings = await Listing.find({
+      name: { $regex: searchTerm, $options: "i" },
+      offer,
+      furnished,
+      parking,
+      type,
+      isDeleted: false,
+    })
+      .sort({ sort: order })
+      .limit(limit)
+      .skip(startIndex)
+      .lean();
+    return listings;
+  }
 }
 
 const listingService = new ListingService();

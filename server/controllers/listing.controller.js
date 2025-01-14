@@ -18,19 +18,6 @@ class ListingController {
       offer,
       imageUrls,
     } = req.body;
-    console.log(
-      name,
-      description,
-      address,
-      regularPrice,
-      discountPrice,
-      bedroom,
-      furnished,
-      parking,
-      type,
-      offer,
-      imageUrls
-    );
     const newListing = await listingService.addListing(
       name,
       description,
@@ -91,6 +78,45 @@ class ListingController {
     const listingId = req.params.id;
     const listing = await listingService.getListing(listingId);
     return res.status(200).json({ listing });
+  });
+
+  getListings = asyncWrapper(async (req, res) => {
+    const limit = parseInt(req.query.limit) || 10;
+    const startIndex = parseInt(req.query.startIndex) || 0;
+    let offer = req.query.offer;
+    if (!offer) {
+      offer = { $in: [false, true] };
+    }
+    let furnished = req.query.furnished;
+    if (!furnished) {
+      furnished = { $in: [false, true] };
+    }
+    let parking = req.query.parking;
+    if (!parking) {
+      parking = { $in: [false, true] };
+    }
+    let type = req.query.type;
+    if (!type || type === "all") {
+      type = { $in: ["rent", "sell"] };
+    }
+    const searchTerm = req.query.search || "";
+    const sort = req.query.sort || "createdAt";
+    const order = req.query.order || "desc";
+    const listings = await listingService.getListings(
+      limit,
+      startIndex,
+      offer,
+      furnished,
+      parking,
+      type,
+      searchTerm,
+      sort,
+      order
+    );
+    if (!listings) {
+      throw new CustomAPIError("No listings");
+    }
+    return res.status(200).json({ listings });
   });
 }
 

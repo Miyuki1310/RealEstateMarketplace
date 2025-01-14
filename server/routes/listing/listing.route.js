@@ -12,5 +12,6 @@ listRouter.get("/getAll/:id", isAuth, listingController.getUserListings);
 listRouter.delete("/delete/:id", isAuth, listingController.deleteListing);
 listRouter.put("/update/:id", isAuth, listingController.updateListing);
 listRouter.get("/get/:id", listingController.getListing);
+listRouter.get("/get", listingController.getListings);
 
 export default listRouter;
