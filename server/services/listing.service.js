@@ -67,7 +67,7 @@ class ListingService {
   }
 
   async getListing(listingId) {
-    const listing = await Listing.findById(listingId);
+    const listing = await Listing.findById(listingId).populate("user").lean();
     if (!listing) {
       throw new CustomAPIError("Listing not found", 404);
     }

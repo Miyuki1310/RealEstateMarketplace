@@ -23,5 +23,6 @@ userRouter.post(
 );
 
 userRouter.put("/update-user", isAuth, userController.updateUser);
+userRouter.get("/:id", isAuth, userController.getUser);
 
 export default userRouter;

@@ -53,6 +53,14 @@ class UserService {
       return newUser;
     }
   }
+
+  async getUser(userId) {
+    const user = await User.findById(userId).lean();
+    if (!user) {
+      throw new CustomAPIError("User not found", 404);
+    }
+    return user;
+  }
 }
 
 const userService = new UserService();
