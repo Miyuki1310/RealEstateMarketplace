@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-import React from "react";
 import { FaBath, FaBed, FaLocationDot } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 

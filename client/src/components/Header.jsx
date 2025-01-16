@@ -37,7 +37,7 @@ const Header = () => {
           <input
             placeholder="Search..."
             className="bg-transparent outline-none w-24 sm:w-64"
-            value={searchTerm}
+            value={searchTerm || ""}
             onChange={(e) => setSearchTerm(e.target.value)}
           ></input>
           <button type="submit">
