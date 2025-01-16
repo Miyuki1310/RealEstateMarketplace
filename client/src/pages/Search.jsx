@@ -1,6 +1,72 @@
-// import React from "react";
+import React from "react";
+import { useQuery } from "react-query";
 
 const Search = () => {
+  const [error, setError] = React.useState("");
+  const [sideBar, setSideBar] = React.useState({
+    search: "",
+    type: "",
+    parking: false,
+    furnished: false,
+    offer: false,
+    sort: "createdAt",
+    order: "desc",
+  });
+  const [listings, setListings] = React.useState([]);
+
+  React.useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const search = urlParams.get("search");
+    setSideBar({
+      ...sideBar,
+      search,
+    });
+    const fetchListings = async () => {
+      const res = await fetch(`/api/listing/get?search=${search}`);
+      const data = await res.json();
+      console.log(data);
+      if (data.message) {
+        setError(data.message);
+      }
+    };
+    fetchListings();
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value, type } = e.target;
+    console.log(name, value, type);
+    if (name === "sort_order") {
+      const [sort, order] = value.split("_");
+      setSideBar({
+        ...sideBar,
+        sort,
+        order,
+      });
+      return;
+    }
+
+    setSideBar({
+      ...sideBar,
+      [name]: e.target.type === "checkbox" ? e.target.checked : e.target.value,
+    });
+  };
+
+  const handleSearch = async () => {
+    console.log(sideBar);
+
+    const query = Object.entries(sideBar)
+      .filter(([, value]) => value)
+      .map(([key, value]) => `${key}=${value}`)
+      .join("&");
+    const url = `/listing/get?${query}`;
+    const res = await fetch(`/api${url}`);
+    const data = await res.json();
+    console.log(data);
+
+    if (data.message) {
+      setError(data.message);
+    }
+  };
   return (
     <div className="flex">
       <div className="border-r flex flex-col gap-8  p-7 h-auto min-h-screen">
@@ -9,7 +75,10 @@ const Search = () => {
           <input
             className="p-3 rounded-lg flex-1"
             type="text"
+            name="search"
             placeholder="Search..."
+            value={sideBar.search}
+            onChange={handleChange}
           />
         </div>
         <div className="flex gap-3 items-center">
@@ -18,9 +87,11 @@ const Search = () => {
             <input
               className="w-5"
               type="radio"
-              id="rent"
+              id="type"
               name="type"
               value="all"
+              checked={sideBar.type === "all"}
+              onChange={handleChange}
             />
             <p>Rent & Sell</p>
           </div>
@@ -28,9 +99,11 @@ const Search = () => {
             <input
               className="w-5"
               type="radio"
-              id="rent"
+              id="type"
               name="type"
               value="rent"
+              checked={sideBar.type === "rent"}
+              onChange={handleChange}
             />
             <p>Rent</p>
           </div>
@@ -38,9 +111,11 @@ const Search = () => {
             <input
               className="w-5"
               type="radio"
-              id="rent"
+              id="type"
               name="type"
               value="sell"
+              checked={sideBar.type === "sell"}
+              onChange={handleChange}
             />
             <p>Sell</p>
           </div>
@@ -53,6 +128,8 @@ const Search = () => {
               type="checkbox"
               id="parking"
               name="parking"
+              checked={sideBar.parking}
+              onChange={handleChange}
             />
             <p>Parking</p>
           </div>
@@ -62,6 +139,8 @@ const Search = () => {
               type="checkbox"
               id="furnished"
               name="furnished"
+              checked={sideBar.furnished}
+              onChange={handleChange}
             />
             <p>Furnished</p>
           </div>
@@ -71,24 +150,35 @@ const Search = () => {
               type="checkbox"
               id="offer"
               name="offer"
-              width={5}
+              checked={sideBar.offer}
+              onChange={handleChange}
             />
             <p>Offer</p>
           </div>
         </div>
         <div className="flex gap-3 items-center">
           <p>Sort: </p>
-          <select className="outline-none p-3 rounded-lg">
+          <select
+            name="sort_order"
+            onChange={handleChange}
+            defaultValue={"createdAt_desc"}
+            className="outline-none p-3 rounded-lg"
+          >
             <option value="regularPrice_desc">Descendent price</option>
             <option value="regularPrice_asc">Ascendent price</option>
-            <option value="Day_desc">Descendent day</option>
-            <option value="Day_desc">Ascendent day</option>
+            <option value="createdAt_desc">Descendent day</option>
+            <option value="createdAt_asc">Ascendent day</option>
           </select>
         </div>
 
-        <button className="bg-slate-800 text-white p-3 rounded-lg">
+        <button
+          type="button"
+          className="bg-slate-800 text-white p-3 rounded-lg"
+          onClick={handleSearch}
+        >
           Search
         </button>
+        <p className="text-red-500">{error}</p>
       </div>
       <div className="flex-1"></div>
     </div>
