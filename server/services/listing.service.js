@@ -85,6 +85,7 @@ class ListingService {
     sort,
     order
   ) {
+    console.log(offer, furnished, parking);
 
     const listings = await Listing.find({
       name: { $regex: searchTerm, $options: "i" },
@@ -94,7 +95,7 @@ class ListingService {
       type,
       isDeleted: false,
     })
-      .sort({ sort: order })
+      .sort({ [sort]: order }) //sort not working, please fix: sort: { sort: order }
       .limit(limit)
       .skip(startIndex)
       .lean();
