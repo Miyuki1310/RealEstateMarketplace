@@ -16,13 +16,20 @@ const Search = () => {
 
   React.useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const search = urlParams.get("search");
+    const search = urlParams.get("search") || "";
+    const offer = urlParams.get("offer") || false;
+    const type = urlParams.get("type") || "";
+
     setSideBar({
       ...sideBar,
-      search,
+      search: search || "",
+      type: type || "all",
+      offer: !!offer || false,
     });
     const fetchListings = async () => {
-      const res = await fetch(`/api/listing/get?search=${search}`);
+      const res = await fetch(
+        `/api/listing/get?search=${search}&offer=${offer}&type=${type}`
+      );
       const data = await res.json();
       console.log(data);
       if (data.message) {
@@ -61,6 +68,7 @@ const Search = () => {
       .map(([key, value]) => `${key}=${value}`)
       .join("&");
     const url = `/listing/get?${query}`;
+    console.log(url);
     const res = await fetch(`/api${url}`);
     const data = await res.json();
     console.log(data);
@@ -81,7 +89,7 @@ const Search = () => {
             type="text"
             name="search"
             placeholder="Search..."
-            value={sideBar.search}
+            value={sideBar.search || ""}
             onChange={handleChange}
           />
         </div>

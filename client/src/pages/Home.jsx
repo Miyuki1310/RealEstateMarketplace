@@ -68,6 +68,12 @@ const Home = () => {
       <div className="flex flex-col gap-4 max-w-6xl mx-auto px-3">
         <div>
           <h1 className="text-slate-500 text-xl font-bold">Recent offers</h1>
+          <Link
+            to="/search?offer=true"
+            className="text-blue-800 text-sm font-bold"
+          >
+            Show more offers
+          </Link>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-5">
             {offerListings && offerListings.length > 0 ? (
               offerListings.map((listing) => {
@@ -82,6 +88,12 @@ const Home = () => {
           <h1 className="text-slate-500 text-xl font-bold">
             Recent places for rent
           </h1>
+          <Link
+            to="/search?type=rent"
+            className="text-blue-800 text-sm font-bold"
+          >
+            Show more rent listing
+          </Link>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-5">
             {rentListings && rentListings.length > 0 ? (
               rentListings.map((listing) => {
@@ -96,6 +108,12 @@ const Home = () => {
           <h1 className="text-slate-500 text-xl font-bold">
             Recent places for sale
           </h1>
+          <Link
+            to="/search?type=sell"
+            className="text-blue-800 text-sm font-bold"
+          >
+            Show more sell listing
+          </Link>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-5">
             {sellListings && sellListings.length > 0 ? (
               sellListings.map((listing) => {

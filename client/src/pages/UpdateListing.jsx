@@ -116,6 +116,13 @@ const UpdateListing = () => {
       body: JSON.stringify(data),
     });
     const resData = await res.json();
+    if (res.status === 401) {
+      setError("Your session has expired. Please sign in again");
+      setSuccess("");
+      setTimeout(() => {
+        navigate("/sign-in");
+      }, 2000);
+    }
     if (resData.message) {
       setError("Listing not updated");
       setSuccess("");

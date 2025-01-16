@@ -10,8 +10,9 @@ const Header = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set("search", searchTerm);
+    urlParams.set("search", searchTerm || "");
     const searchQuery = urlParams.toString();
+    console.log(searchQuery);
     navigate(`/search?${searchQuery}`);
   };
 
