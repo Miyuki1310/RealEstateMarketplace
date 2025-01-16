@@ -25,7 +25,7 @@ const Header = () => {
     <header className="bg-slate-200 shadow-md flex justify-center">
       <div className="flex justify-between items-center max-w-6xl flex-1 p-3">
         <Link to={"/"}>
-          <h1 className="font-bold text-xl">
+          <h1 className="font-bold text-xl flex items-center flex-col sm:flex-row">
             <span className="text-slate-500">Sahand</span>
             <span className="text-slate-700">Estate</span>
           </h1>
@@ -45,10 +45,10 @@ const Header = () => {
           </button>
         </form>
         <ul className="flex gap-6 font-bold items-center">
-          <Link to={"/"}>
+          <Link to={"/"} className="hidden sm:inline">
             <li className="hidden sm:inline hover:underline">Home</li>
           </Link>
-          <Link to={"/about"}>
+          <Link to={"/about"} className="hidden sm-inline">
             <li className="hidden sm:inline hover:underline">About</li>
           </Link>
           {currentUser ? (
