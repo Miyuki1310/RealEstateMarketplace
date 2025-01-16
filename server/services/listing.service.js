@@ -85,7 +85,7 @@ class ListingService {
     sort,
     order
   ) {
-    console.log(offer, furnished, parking);
+    console.log(!offer, furnished, parking);
 
     const listings = await Listing.find({
       name: { $regex: searchTerm, $options: "i" },

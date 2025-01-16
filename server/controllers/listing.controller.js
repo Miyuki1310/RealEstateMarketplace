@@ -84,15 +84,15 @@ class ListingController {
     const limit = parseInt(req.query.limit) || 10;
     const startIndex = parseInt(req.query.startIndex) || 0;
     let offer = req.query.offer;
-    if (!offer) {
+    if (!offer || offer === "false") {
       offer = { $in: [false, true] };
     }
     let furnished = req.query.furnished;
-    if (!furnished) {
+    if (!furnished || furnished === "false") {
       furnished = { $in: [false, true] };
     }
     let parking = req.query.parking;
-    if (!parking) {
+    if (!parking || parking === "false") {
       parking = { $in: [false, true] };
     }
     let type = req.query.type;
@@ -100,6 +100,8 @@ class ListingController {
       type = { $in: ["rent", "sell"] };
     }
     const searchTerm = req.query.search || "";
+    console.log(searchTerm);
+
     const sort = req.query.sort || "createdAt";
     const order = req.query.order || "desc";
     const listings = await listingService.getListings(
